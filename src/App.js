@@ -1,14 +1,16 @@
 import { getLyrics, getSong } from 'genius-lyrics-api'
 import { useEffect, useState } from "react"
+import WordCloud from "react-d3-cloud"
 var kuromoji = require("kuromoji")
 function App() {
 
   const [title, setTitle] = useState("")
   const [artist, setArtist] = useState()
-  const [words, setWords] = useState("")
-  const [state, setState] = useState({
-    wordData: [],
+  const [lyrics, setLyrics] = useState("")
+  const [wordData, setWordData] = useState({
+    key: "",
   })
+  const [state, setState] = useState(0)
 
   const options = {
     apiKey: 'MfNShY6mQttxNRto4uOVx7T0iiustuNsm1-cYIgU2Lyk-2VR_zh8xdMQy_Y1Yw40',
@@ -17,13 +19,9 @@ function App() {
     optimizeQuery: true
   }
 
-  const onClick = () => {
-    getLyrics(options).then((lyrics) => {
-      console.log(lyrics)
-      setWords(lyrics)
-    })
-    setArtist("")
-    setTitle("")
+  const onClick = (l) => {
+    setLyrics(l)
+    console.log(l)
   }
   
   const analyze = () => {
@@ -31,10 +29,10 @@ function App() {
     const NO_CONTENT = '*'
     kuromoji.builder({ dicPath: "/dict" }).build(function (err, tokenizer) {
       // tokenizer is ready
-      var path = tokenizer.tokenize(words);
+      var path = tokenizer.tokenize(lyrics);
       console.log(path);
 
-      const wordData = path
+      const lyricsData = path
         .filter(t=>TARGET_POS.includes(t.pos))
         .map(t=>t.basic_form === NO_CONTENT ? t.surface_form : t.basic_form)
         .reduce((data, text) => {
@@ -50,10 +48,10 @@ function App() {
           return data
         }, [])
 
-        setState({wordData})
-        console.log(wordData)
+        setWordData({lyricsData})
+        console.log({lyricsData})
     });
-    }
+  }
 
   return (
     <>
@@ -61,12 +59,19 @@ function App() {
       </input>
       <input placeholder="アーティスト" value={artist} onChange={e=>setArtist(e.target.value)}>
       </input>
-      <button onClick={()=>getLyrics(options).then((l)=>onClick(l))}>
-        表示する
+      <button onClick={()=>getLyrics(options).then((lyrics)=>onClick(lyrics))}>
+        検索する
       </button>
       <button onClick={()=>analyze()}>
         分析する
       </button>
+      <button onClick={()=>setState(1)}>
+        表示する
+      </button>
+
+      {state == 1 && <WordCloud data={wordData.lyricsData} fontSize={word=>word.value * 8}/>}
+
+
     </>
   )
 }

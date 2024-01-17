@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "歌詞の可視化",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,6 +10,7 @@
     "genius-lyrics-api": "^3.2.0",
     "kuromoji": "^0.1.2",
     "react": "^18.2.0",
+    "react-d3-cloud": "^1.0.6",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
@@ -17,7 +18,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test":  "react-app-rewired test",
+    "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
   "eslintConfig": {
